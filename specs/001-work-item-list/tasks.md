@@ -27,8 +27,8 @@
 
 **Purpose**: Create the two projects named in plan.md
 
-- [ ] T001 [P] Create `backend/WorkItem.sln` with a .NET 9 Web API project at `backend/WorkItem.Api/WorkItem.Api.csproj` (Dapper, Microsoft.Data.Sqlite) and an xUnit project at `backend/WorkItem.Api.Tests/WorkItem.Api.Tests.csproj` (Microsoft.AspNetCore.Mvc.Testing) that references the API
-- [ ] T002 [P] Scaffold the Vite Vue 3 app in `frontend/` with TypeScript strict, Vue Router, Tailwind CSS, DaisyUI, Vitest, and Vue Test Utils; set `"typecheck": "vue-tsc --noEmit"` and `"test": "vitest run"` in `frontend/package.json`; proxy `/api` to the local API in `frontend/vite.config.ts`
+- [x] T001 [P] Create `backend/WorkItem.sln` with a .NET 9 Web API project at `backend/WorkItem.Api/WorkItem.Api.csproj` (Dapper, Microsoft.Data.Sqlite) and an xUnit project at `backend/WorkItem.Api.Tests/WorkItem.Api.Tests.csproj` (Microsoft.AspNetCore.Mvc.Testing) that references the API
+- [x] T002 [P] Scaffold the Vite Vue 3 app in `frontend/` with TypeScript strict, Vue Router, Tailwind CSS, DaisyUI, Vitest, and Vue Test Utils; set `"typecheck": "vue-tsc --noEmit"` and `"test": "vitest run"` in `frontend/package.json`; proxy `/api` to the local API in `frontend/vite.config.ts`
 
 ---
 
@@ -38,15 +38,15 @@
 
 **⚠️ CRITICAL**: No user story work starts until this phase is complete
 
-- [ ] T003 [P] Create `work_item` and `confirmation` with `PRAGMA foreign_keys = ON` and `CREATE TABLE IF NOT EXISTS` exactly as in `specs/001-work-item-list/data-model.md` in `backend/WorkItem.Api/Data/schema.sql`
-- [ ] T004 [P] Add the shared records from `specs/001-work-item-list/contracts/openapi.yaml` (Session, Role, Status, WorkItemSummary, WorkItemDetail, WorkItemPage, AdminWorkItem, AdminWorkItemPage, WorkItemWrite, ConfirmRequest, ConfirmResult, RevokeResult, Error, FieldError) in `backend/WorkItem.Api/Models/ApiModels.cs`
-- [ ] T005 [P] Add the same field names as TypeScript types in `frontend/src/api/types.ts`
-- [ ] T006 [P] Read `X-Display-Name` and `X-Role`, trim the name, and return 401 when the name is missing in `backend/WorkItem.Api/Auth/CallerContext.cs`
-- [ ] T007 Open the SQLite file (configuration default `backend/data/workitems.db`), enable foreign keys, and execute `schema.sql` on startup in `backend/WorkItem.Api/Data/SqliteDatabase.cs`
-- [ ] T008 Register SQLite, caller context, and controllers in `backend/WorkItem.Api/Program.cs`
-- [ ] T009 Add a `WebApplicationFactory` that uses a temporary SQLite file per test class in `backend/WorkItem.Api.Tests/ApiFactory.cs`
-- [ ] T010 [P] Mount the Vue app and declare routes `/sign-in`, `/work-items`, `/work-items/:id`, `/admin/work-items`, `/admin/work-items/new`, and `/admin/work-items/:id/edit` in `frontend/src/main.ts`, `frontend/src/App.vue`, and `frontend/src/router.ts`
-- [ ] T011 Add the typed `fetch` helper that sends `X-Display-Name` and `X-Role` on every call in `frontend/src/api/workItems.ts`
+- [x] T003 [P] Create `work_item` and `confirmation` with `PRAGMA foreign_keys = ON` and `CREATE TABLE IF NOT EXISTS` exactly as in `specs/001-work-item-list/data-model.md` in `backend/WorkItem.Api/Data/schema.sql`
+- [x] T004 [P] Add the shared records from `specs/001-work-item-list/contracts/openapi.yaml` (Session, Role, Status, WorkItemSummary, WorkItemDetail, WorkItemPage, AdminWorkItem, AdminWorkItemPage, WorkItemWrite, ConfirmRequest, ConfirmResult, RevokeResult, Error, FieldError) in `backend/WorkItem.Api/Models/ApiModels.cs`
+- [x] T005 [P] Add the same field names as TypeScript types in `frontend/src/api/types.ts`
+- [x] T006 [P] Read `X-Display-Name` and `X-Role`, trim the name, and return 401 when the name is missing in `backend/WorkItem.Api/Auth/CallerContext.cs`
+- [x] T007 Open the SQLite file (configuration default `backend/data/workitems.db`), enable foreign keys, and execute `schema.sql` on startup in `backend/WorkItem.Api/Data/SqliteDatabase.cs`
+- [x] T008 Register SQLite, caller context, and controllers in `backend/WorkItem.Api/Program.cs`
+- [x] T009 Add a `WebApplicationFactory` that uses a temporary SQLite file per test class in `backend/WorkItem.Api.Tests/ApiFactory.cs`
+- [x] T010 [P] Mount the Vue app and declare routes `/sign-in`, `/work-items`, `/work-items/:id`, `/admin/work-items`, `/admin/work-items/new`, and `/admin/work-items/:id/edit` in `frontend/src/main.ts`, `frontend/src/App.vue`, and `frontend/src/router.ts`
+- [x] T011 Add the typed `fetch` helper that sends `X-Display-Name` and `X-Role` on every call in `frontend/src/api/workItems.ts`
 
 **Checkpoint**: API starts, applies the schema, and rejects a call with no display name. The UI shell loads with an empty route table wired.
 
@@ -60,15 +60,15 @@
 
 ### Tests for User Story 1
 
-- [ ] T012 [P] [US1] Add `POST /api/session` tests for a trimmed name, empty-after-trim 400 (`name_required`), and a role other than `user` or `admin` 400 (`invalid_role`) in `backend/WorkItem.Api.Tests/SessionEndpointTests.cs`
-- [ ] T013 [P] [US1] Add page tests that the list is hidden until role and name are entered, surrounding spaces are stripped, and each role leaves the sign-in page in `frontend/tests/sign-in.spec.ts`
+- [x] T012 [P] [US1] Add `POST /api/session` tests for a trimmed name, empty-after-trim 400 (`name_required`), and a role other than `user` or `admin` 400 (`invalid_role`) in `backend/WorkItem.Api.Tests/SessionEndpointTests.cs`
+- [x] T013 [P] [US1] Add page tests that the list is hidden until role and name are entered, surrounding spaces are stripped, and each role leaves the sign-in page in `frontend/tests/sign-in.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T014 [US1] Implement `POST /api/session` to return the trimmed `{ displayName, role }` in `backend/WorkItem.Api/Controllers/SessionController.cs`
-- [ ] T015 [P] [US1] Store `{ displayName, role }` in `localStorage` and restore it on load in `frontend/src/composables/useSession.ts`
-- [ ] T016 [US1] Build the sign-in form (Front-end user or Administrator, display name, reject empty after trim) with DaisyUI in `frontend/src/pages/SignInPage.vue`
-- [ ] T017 [US1] Send unsigned visitors to `/sign-in`, send `user` to `/work-items`, and send `admin` to `/admin/work-items` in `frontend/src/router.ts`
+- [x] T014 [US1] Implement `POST /api/session` to return the trimmed `{ displayName, role }` in `backend/WorkItem.Api/Controllers/SessionController.cs`
+- [x] T015 [P] [US1] Store `{ displayName, role }` in `localStorage` and restore it on load in `frontend/src/composables/useSession.ts`
+- [x] T016 [US1] Build the sign-in form (Front-end user or Administrator, display name, reject empty after trim) with DaisyUI in `frontend/src/pages/SignInPage.vue`
+- [x] T017 [US1] Send unsigned visitors to `/sign-in`, send `user` to `/work-items`, and send `admin` to `/admin/work-items` in `frontend/src/router.ts`
 
 **Checkpoint**: Sign-in works for both roles. No work item list is visible before a name is stored.
 
@@ -82,16 +82,16 @@
 
 ### Tests for User Story 2
 
-- [ ] T018 [P] [US2] Add `GET /api/work-items` tests for an empty `items` array with `total` 0, default `direction=desc`, `direction=asc`, `pageSize` 10, a page past the end, and 401 without a name in `backend/WorkItem.Api.Tests/WorkItemListEndpointTests.cs`
-- [ ] T019 [P] [US2] Add page tests for columns 編號, 標題, and 狀態, the text 「目前無待辦項目」, the sort toggle, and a second page in `frontend/tests/work-item-list.spec.ts`
+- [x] T018 [P] [US2] Add `GET /api/work-items` tests for an empty `items` array with `total` 0, default `direction=desc`, `direction=asc`, `pageSize` 10, a page past the end, and 401 without a name in `backend/WorkItem.Api.Tests/WorkItemListEndpointTests.cs`
+- [x] T019 [P] [US2] Add page tests for columns 編號, 標題, and 狀態, the text 「目前無待辦項目」, the sort toggle, and a second page in `frontend/tests/work-item-list.spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T020 [US2] Query `work_item` ordered by `created_at DESC, id DESC` or `created_at ASC, id ASC`, page size 10, `page` 1-based, and status `pending` when that display name has no confirmation row in `backend/WorkItem.Api/Data/WorkItemRepository.cs`
-- [ ] T021 [US2] Implement `GET /api/work-items` in `backend/WorkItem.Api/Controllers/WorkItemsController.cs`
-- [ ] T022 [P] [US2] Add `listWorkItems(page, direction)` in `frontend/src/api/workItems.ts`
-- [ ] T023 [US2] Read and write `page` and `direction` on the `/work-items` query string in `frontend/src/composables/useWorkItemList.ts`
-- [ ] T024 [US2] Render the DaisyUI table, 「目前無待辦項目」, the sort control, and the pager; map `pending` to 待確認 and `confirmed` to 已確認 in `frontend/src/pages/WorkItemListPage.vue`
+- [x] T020 [US2] Query `work_item` ordered by `created_at DESC, id DESC` or `created_at ASC, id ASC`, page size 10, `page` 1-based, and status `pending` when that display name has no confirmation row in `backend/WorkItem.Api/Data/WorkItemRepository.cs`
+- [x] T021 [US2] Implement `GET /api/work-items` in `backend/WorkItem.Api/Controllers/WorkItemsController.cs`
+- [x] T022 [P] [US2] Add `listWorkItems(page, direction)` in `frontend/src/api/workItems.ts`
+- [x] T023 [US2] Read and write `page` and `direction` on the `/work-items` query string in `frontend/src/composables/useWorkItemList.ts`
+- [x] T024 [US2] Render the DaisyUI table, 「目前無待辦項目」, the sort control, and the pager; map `pending` to 待確認 and `confirmed` to 已確認 in `frontend/src/pages/WorkItemListPage.vue`
 
 **Checkpoint**: The list is readable and sortable without confirm, detail, or admin screens.
 
@@ -105,16 +105,16 @@
 
 ### Tests for User Story 3
 
-- [ ] T025 [P] [US3] Add tests for confirm count, already-confirmed ids still counted, empty `ids` 400, missing id 404 with no row written, revoke 200, revoke of a missing id 404, and unchanged `updated_at` in `backend/WorkItem.Api.Tests/ConfirmRevokeEndpointTests.cs`
-- [ ] T026 [P] [US3] Add page tests for highlighted checked rows, disabled 確認 until a displayed row is checked, header checkbox select-all and clear of the current page only, mixed header state, toast 「已成功確認 X 項目」, revoke dialog 「確定要將此項目標記回『待確認』嗎？」 with 取消 leaving 已確認 and 確定 showing 「已將 1 項目標記為待確認」, and a failed save keeping the prior status in `frontend/tests/confirm-revoke.spec.ts`
+- [x] T025 [P] [US3] Add tests for confirm count, already-confirmed ids still counted, empty `ids` 400, missing id 404 with no row written, revoke 200, revoke of a missing id 404, and unchanged `updated_at` in `backend/WorkItem.Api.Tests/ConfirmRevokeEndpointTests.cs`
+- [x] T026 [P] [US3] Add page tests for highlighted checked rows, disabled 確認 until a displayed row is checked, header checkbox select-all and clear of the current page only, mixed header state, toast 「已成功確認 X 項目」, revoke dialog 「確定要將此項目標記回『待確認』嗎？」 with 取消 leaving 已確認 and 確定 showing 「已將 1 項目標記為待確認」, and a failed save keeping the prior status in `frontend/tests/confirm-revoke.spec.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T027 [US3] Insert a confirmation row on confirm and delete it on revoke, without updating `work_item.updated_at`, in `backend/WorkItem.Api/Data/WorkItemRepository.cs`
-- [ ] T028 [US3] Implement `POST /api/work-items/confirm` (all-or-nothing) and `POST /api/work-items/{id}/revoke` in `backend/WorkItem.Api/Controllers/WorkItemsController.cs`
-- [ ] T029 [P] [US3] Add `confirmWorkItems` and `revokeWorkItem` in `frontend/src/api/workItems.ts`
-- [ ] T030 [US3] Select and clear only the ids on the current page, including the mixed header checkbox, and clear selection when `page` or `direction` changes in `frontend/src/composables/useWorkItemSelection.ts`
-- [ ] T031 [US3] Add row checkboxes, the header checkbox, 確認, 撤銷確認 (only when 已確認), the DaisyUI modal, and success or error alerts in `frontend/src/pages/WorkItemListPage.vue`
+- [x] T027 [US3] Insert a confirmation row on confirm and delete it on revoke, without updating `work_item.updated_at`, in `backend/WorkItem.Api/Data/WorkItemRepository.cs`
+- [x] T028 [US3] Implement `POST /api/work-items/confirm` (all-or-nothing) and `POST /api/work-items/{id}/revoke` in `backend/WorkItem.Api/Controllers/WorkItemsController.cs`
+- [x] T029 [P] [US3] Add `confirmWorkItems` and `revokeWorkItem` in `frontend/src/api/workItems.ts`
+- [x] T030 [US3] Select and clear only the ids on the current page, including the mixed header checkbox, and clear selection when `page` or `direction` changes in `frontend/src/composables/useWorkItemSelection.ts`
+- [x] T031 [US3] Add row checkboxes, the header checkbox, 確認, 撤銷確認 (only when 已確認), the DaisyUI modal, and success or error alerts in `frontend/src/pages/WorkItemListPage.vue`
 
 **Checkpoint**: Confirm and revoke work on the list for one signed-in name.
 
@@ -128,12 +128,12 @@
 
 ### Tests for User Story 4
 
-- [ ] T032 [P] [US4] Add tests that name A stays `confirmed` on a new request and name B stays `pending` for the same item in `backend/WorkItem.Api.Tests/ConfirmationPersistenceTests.cs`
-- [ ] T033 [P] [US4] Add page tests that a remounted session still shows 已確認 with every checkbox unchecked, and a second display name shows 待確認, in `frontend/tests/confirmation-persistence.spec.ts`
+- [x] T032 [P] [US4] Add tests that name A stays `confirmed` on a new request and name B stays `pending` for the same item in `backend/WorkItem.Api.Tests/ConfirmationPersistenceTests.cs`
+- [x] T033 [P] [US4] Add page tests that a remounted session still shows 已確認 with every checkbox unchecked, and a second display name shows 待確認, in `frontend/tests/confirmation-persistence.spec.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T034 [US4] Restore only `{ displayName, role }` from `localStorage` and never persist checkbox ids in `frontend/src/composables/useSession.ts` and `frontend/src/composables/useWorkItemSelection.ts`
+- [x] T034 [US4] Restore only `{ displayName, role }` from `localStorage` and never persist checkbox ids in `frontend/src/composables/useSession.ts` and `frontend/src/composables/useWorkItemSelection.ts`
 
 **Checkpoint**: Personal status survives a new page load. Selection does not.
 
@@ -147,16 +147,16 @@
 
 ### Tests for User Story 5
 
-- [ ] T035 [P] [US5] Add `GET /api/work-items/{id}` tests for 編號, title, description, createdAt, caller status, updatedAt, and 404 in `backend/WorkItem.Api.Tests/WorkItemDetailEndpointTests.cs`
-- [ ] T036 [P] [US5] Add page tests for those fields, 返回列表 restoring `page` and `direction` with unchecked boxes, and a not-found message with a way back in `frontend/tests/work-item-detail.spec.ts`
+- [x] T035 [P] [US5] Add `GET /api/work-items/{id}` tests for 編號, title, description, createdAt, caller status, updatedAt, and 404 in `backend/WorkItem.Api.Tests/WorkItemDetailEndpointTests.cs`
+- [x] T036 [P] [US5] Add page tests for those fields, 返回列表 restoring `page` and `direction` with unchecked boxes, and a not-found message with a way back in `frontend/tests/work-item-detail.spec.ts`
 
 ### Implementation for User Story 5
 
-- [ ] T037 [US5] Load one item plus the caller status in `backend/WorkItem.Api/Data/WorkItemRepository.cs`
-- [ ] T038 [US5] Implement `GET /api/work-items/{id}` in `backend/WorkItem.Api/Controllers/WorkItemsController.cs`
-- [ ] T039 [P] [US5] Add `getWorkItem` in `frontend/src/api/workItems.ts`
-- [ ] T040 [US5] Show 編號, 標題, 描述, 建立時間, 狀態, and 最後更新時間, plus not-found and 返回列表, in `frontend/src/pages/WorkItemDetailPage.vue`
-- [ ] T041 [US5] Add 查看詳情 that keeps the current `page` and `direction`, and do not navigate when the user uses a checkbox, 確認, or 撤銷確認, in `frontend/src/pages/WorkItemListPage.vue`
+- [x] T037 [US5] Load one item plus the caller status in `backend/WorkItem.Api/Data/WorkItemRepository.cs`
+- [x] T038 [US5] Implement `GET /api/work-items/{id}` in `backend/WorkItem.Api/Controllers/WorkItemsController.cs`
+- [x] T039 [P] [US5] Add `getWorkItem` in `frontend/src/api/workItems.ts`
+- [x] T040 [US5] Show 編號, 標題, 描述, 建立時間, 狀態, and 最後更新時間, plus not-found and 返回列表, in `frontend/src/pages/WorkItemDetailPage.vue`
+- [x] T041 [US5] Add 查看詳情 that keeps the current `page` and `direction`, and do not navigate when the user uses a checkbox, 確認, or 撤銷確認, in `frontend/src/pages/WorkItemListPage.vue`
 
 **Checkpoint**: Detail and return-to-list work from a paged, sorted list.
 
@@ -170,17 +170,17 @@
 
 ### Tests for User Story 6
 
-- [ ] T042 [P] [US6] Add admin list and create tests for 201 with `updatedAt` equal to `createdAt`, newest-first order, blank title 400 with `field: title` and no row, and role `user` 403 in `backend/WorkItem.Api.Tests/AdminCreateEndpointTests.cs`
-- [ ] T043 [P] [US6] Add page tests for the field error on an empty or whitespace title, 「新增成功」, the new row first when newest-first, and a front-end user who sees no add, edit, or delete controls in `frontend/tests/admin-create.spec.ts`
+- [x] T042 [P] [US6] Add admin list and create tests for 201 with `updatedAt` equal to `createdAt`, newest-first order, blank title 400 with `field: title` and no row, and role `user` 403 in `backend/WorkItem.Api.Tests/AdminCreateEndpointTests.cs`
+- [x] T043 [P] [US6] Add page tests for the field error on an empty or whitespace title, 「新增成功」, the new row first when newest-first, and a front-end user who sees no add, edit, or delete controls in `frontend/tests/admin-create.spec.ts`
 
 ### Implementation for User Story 6
 
-- [ ] T044 [US6] Insert a trimmed title, store a missing description as `''`, set both timestamps, and list admin rows without a personal status in `backend/WorkItem.Api/Data/WorkItemRepository.cs`
-- [ ] T045 [US6] Implement `GET /api/admin/work-items` and `POST /api/admin/work-items`, returning 403 when the role is not `admin`, in `backend/WorkItem.Api/Controllers/AdminWorkItemsController.cs`
-- [ ] T046 [P] [US6] Add `listAdminWorkItems` and `createWorkItem` in `frontend/src/api/workItems.ts`
-- [ ] T047 [US6] Render the admin table and the link to `/admin/work-items/new` in `frontend/src/pages/AdminListPage.vue`
-- [ ] T048 [US6] Render 標題 (required) and 描述 (optional), block a blank title with a field error, and return to the admin list with alert 「新增成功」 in `frontend/src/pages/AdminWorkItemFormPage.vue`
-- [ ] T049 [US6] Refuse role `user` on every `/admin` route so add, edit, and delete controls are not shown in `frontend/src/router.ts`
+- [x] T044 [US6] Insert a trimmed title, store a missing description as `''`, set both timestamps, and list admin rows without a personal status in `backend/WorkItem.Api/Data/WorkItemRepository.cs`
+- [x] T045 [US6] Implement `GET /api/admin/work-items` and `POST /api/admin/work-items`, returning 403 when the role is not `admin`, in `backend/WorkItem.Api/Controllers/AdminWorkItemsController.cs`
+- [x] T046 [P] [US6] Add `listAdminWorkItems` and `createWorkItem` in `frontend/src/api/workItems.ts`
+- [x] T047 [US6] Render the admin table and the link to `/admin/work-items/new` in `frontend/src/pages/AdminListPage.vue`
+- [x] T048 [US6] Render 標題 (required) and 描述 (optional), block a blank title with a field error, and return to the admin list with alert 「新增成功」 in `frontend/src/pages/AdminWorkItemFormPage.vue`
+- [x] T049 [US6] Refuse role `user` on every `/admin` route so add, edit, and delete controls are not shown in `frontend/src/router.ts`
 
 **Checkpoint**: An administrator can add an item. A front-end user cannot.
 
@@ -194,16 +194,16 @@
 
 ### Tests for User Story 7
 
-- [ ] T050 [P] [US7] Add `PUT /api/admin/work-items/{id}` tests for the new title, blank title 400 with the previous row unchanged, confirmation rows unchanged, `updatedAt` changed, and 404 in `backend/WorkItem.Api.Tests/AdminEditEndpointTests.cs`
-- [ ] T051 [P] [US7] Add page tests for prefilled 標題 and 描述, a field error that stays on the form, and 「更新成功」 with the new title on the admin row in `frontend/tests/admin-edit.spec.ts`
+- [x] T050 [P] [US7] Add `PUT /api/admin/work-items/{id}` tests for the new title, blank title 400 with the previous row unchanged, confirmation rows unchanged, `updatedAt` changed, and 404 in `backend/WorkItem.Api.Tests/AdminEditEndpointTests.cs`
+- [x] T051 [P] [US7] Add page tests for prefilled 標題 and 描述, a field error that stays on the form, and 「更新成功」 with the new title on the admin row in `frontend/tests/admin-edit.spec.ts`
 
 ### Implementation for User Story 7
 
-- [ ] T052 [US7] Update title and description and set `updated_at` to the current UTC time without writing `confirmation` in `backend/WorkItem.Api/Data/WorkItemRepository.cs`
-- [ ] T053 [US7] Implement `PUT /api/admin/work-items/{id}` in `backend/WorkItem.Api/Controllers/AdminWorkItemsController.cs`
-- [ ] T054 [P] [US7] Add `getAdminWorkItem` and `updateWorkItem` in `frontend/src/api/workItems.ts`
-- [ ] T055 [US7] Prefill `/admin/work-items/:id/edit`, keep 儲存 from saving a blank title, and return with alert 「更新成功」 in `frontend/src/pages/AdminWorkItemFormPage.vue`
-- [ ] T056 [US7] Add the 編輯 control on each row in `frontend/src/pages/AdminListPage.vue`
+- [x] T052 [US7] Update title and description and set `updated_at` to the current UTC time without writing `confirmation` in `backend/WorkItem.Api/Data/WorkItemRepository.cs`
+- [x] T053 [US7] Implement `PUT /api/admin/work-items/{id}` in `backend/WorkItem.Api/Controllers/AdminWorkItemsController.cs`
+- [x] T054 [P] [US7] Add `getAdminWorkItem` and `updateWorkItem` in `frontend/src/api/workItems.ts`
+- [x] T055 [US7] Prefill `/admin/work-items/:id/edit`, keep 儲存 from saving a blank title, and return with alert 「更新成功」 in `frontend/src/pages/AdminWorkItemFormPage.vue`
+- [x] T056 [US7] Add the 編輯 control on each row in `frontend/src/pages/AdminListPage.vue`
 
 **Checkpoint**: Edit updates shared text only. Personal status stays.
 
@@ -217,15 +217,15 @@
 
 ### Tests for User Story 8
 
-- [ ] T057 [P] [US8] Add `DELETE /api/admin/work-items/{id}` tests for 204, cascaded confirmation rows, the remaining item keeping its id, 404, and 403 in `backend/WorkItem.Api.Tests/AdminDeleteEndpointTests.cs`
-- [ ] T058 [P] [US8] Add page tests for dialog cancel, 「刪除成功」, a failed delete that keeps the row, and the deleted id showing not-found on the detail route in `frontend/tests/admin-delete.spec.ts`
+- [x] T057 [P] [US8] Add `DELETE /api/admin/work-items/{id}` tests for 204, cascaded confirmation rows, the remaining item keeping its id, 404, and 403 in `backend/WorkItem.Api.Tests/AdminDeleteEndpointTests.cs`
+- [x] T058 [P] [US8] Add page tests for dialog cancel, 「刪除成功」, a failed delete that keeps the row, and the deleted id showing not-found on the detail route in `frontend/tests/admin-delete.spec.ts`
 
 ### Implementation for User Story 8
 
-- [ ] T059 [US8] Delete one `work_item` by id and rely on `ON DELETE CASCADE` for its confirmation rows in `backend/WorkItem.Api/Data/WorkItemRepository.cs`
-- [ ] T060 [US8] Implement `DELETE /api/admin/work-items/{id}` in `backend/WorkItem.Api/Controllers/AdminWorkItemsController.cs`
-- [ ] T061 [P] [US8] Add `deleteWorkItem` in `frontend/src/api/workItems.ts`
-- [ ] T062 [US8] Add the DaisyUI dialog 「確定要刪除此項目嗎？」 with 取消 and 確定, plus alert 「刪除成功」 or an error that keeps the row, in `frontend/src/pages/AdminListPage.vue`
+- [x] T059 [US8] Delete one `work_item` by id and rely on `ON DELETE CASCADE` for its confirmation rows in `backend/WorkItem.Api/Data/WorkItemRepository.cs`
+- [x] T060 [US8] Implement `DELETE /api/admin/work-items/{id}` in `backend/WorkItem.Api/Controllers/AdminWorkItemsController.cs`
+- [x] T061 [P] [US8] Add `deleteWorkItem` in `frontend/src/api/workItems.ts`
+- [x] T062 [US8] Add the DaisyUI dialog 「確定要刪除此項目嗎？」 with 取消 and 確定, plus alert 「刪除成功」 or an error that keeps the row, in `frontend/src/pages/AdminListPage.vue`
 
 **Checkpoint**: Delete removes the shared item and its personal statuses. Other ids stay.
 
@@ -235,9 +235,9 @@
 
 **Purpose**: Shared failure and display behavior from the spec edge cases and quickstart
 
-- [ ] T063 [P] Format `createdAt` and `updatedAt` as a local date and time in `frontend/src/pages/WorkItemDetailPage.vue` and `frontend/src/pages/AdminListPage.vue`
-- [ ] T064 When confirm, revoke, edit, or delete returns 404, show an error and the current list without that item in `frontend/src/pages/WorkItemListPage.vue`, `frontend/src/pages/AdminListPage.vue`, and `frontend/src/pages/AdminWorkItemFormPage.vue`
-- [ ] T065 Run the checks in `specs/001-work-item-list/quickstart.md`: `npm run typecheck`, `npm test`, `dotnet test`, and `dotnet build`
+- [x] T063 [P] Format `createdAt` and `updatedAt` as a local date and time in `frontend/src/pages/WorkItemDetailPage.vue` and `frontend/src/pages/AdminListPage.vue`
+- [x] T064 When confirm, revoke, edit, or delete returns 404, show an error and the current list without that item in `frontend/src/pages/WorkItemListPage.vue`, `frontend/src/pages/AdminListPage.vue`, and `frontend/src/pages/AdminWorkItemFormPage.vue`
+- [x] T065 Run the checks in `specs/001-work-item-list/quickstart.md`: `npm run typecheck`, `npm test`, `dotnet test`, and `dotnet build`
 
 ---
 

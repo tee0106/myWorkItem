@@ -1,0 +1,458 @@
+openapi: 3.0.3
+info:
+  title: Work Item List API
+  version: 0.1.0
+  description: |
+    Local API for the Work Item List app. Identity is the trimmed display name
+    in X-Display-Name. Role is X-Role: user or admin. Chinese UI copy is rendered
+    by the frontend from these status values and counts.
+
+servers:
+  - url: /api
+
+tags:
+  - name: Session
+  - name: WorkItems
+  - name: AdminWorkItems
+
+paths:
+  /session:
+    post:
+      tags: [Session]
+      summary: Validate a sign-in and return the trimmed identity
+      operationId: createSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignIn'
+      responses:
+        '200':
+          description: Name accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '400':
+          description: Display name is empty after trim, or role is not user or admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /work-items:
+    get:
+      tags: [WorkItems]
+      summary: Page of work items with the caller's personal status
+      operationId: listWorkItems
+      parameters:
+        - $ref: '#/components/parameters/Direction'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/DisplayName'
+        - $ref: '#/components/parameters/Role'
+      responses:
+        '200':
+          description: One page. Empty items when no work items exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkItemPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /work-items/{id}:
+    get:
+      tags: [WorkItems]
+      summary: One work item with the caller's personal status
+      operationId: getWorkItem
+      parameters:
+        - $ref: '#/components/parameters/WorkItemId'
+        - $ref: '#/components/parameters/DisplayName'
+        - $ref: '#/components/parameters/Role'
+      responses:
+        '200':
+          description: The item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkItemDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /work-items/confirm:
+    post:
+      tags: [WorkItems]
+      summary: Mark the caller's selected items confirmed
+      description: |
+        All-or-nothing. If any id does not exist, no status changes and the
+        response is 404. Already confirmed ids stay confirmed and are included
+        in confirmedCount. Does not change updatedAt.
+      operationId: confirmWorkItems
+      parameters:
+        - $ref: '#/components/parameters/DisplayName'
+        - $ref: '#/components/parameters/Role'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmRequest'
+      responses:
+        '200':
+          description: Caller statuses updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfirmResult'
+        '400':
+          description: ids is empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /work-items/{id}/revoke:
+    post:
+      tags: [WorkItems]
+      summary: Mark the caller's item pending again
+      description: Deletes that person's confirmation row. Does not change updatedAt.
+      operationId: revokeWorkItem
+      parameters:
+        - $ref: '#/components/parameters/WorkItemId'
+        - $ref: '#/components/parameters/DisplayName'
+        - $ref: '#/components/parameters/Role'
+      responses:
+        '200':
+          description: Caller status is pending
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RevokeResult'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /admin/work-items:
+    get:
+      tags: [AdminWorkItems]
+      summary: Page of shared work items for an administrator
+      operationId: listAdminWorkItems
+      parameters:
+        - $ref: '#/components/parameters/Direction'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/DisplayName'
+        - $ref: '#/components/parameters/Role'
+      responses:
+        '200':
+          description: One page without personal status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminWorkItemPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags: [AdminWorkItems]
+      summary: Create a work item
+      operationId: createWorkItem
+      parameters:
+        - $ref: '#/components/parameters/DisplayName'
+        - $ref: '#/components/parameters/Role'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkItemWrite'
+      responses:
+        '201':
+          description: Created. Appears first when the list is newest first.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminWorkItem'
+        '400':
+          description: Title empty after trim
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FieldError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /admin/work-items/{id}:
+    put:
+      tags: [AdminWorkItems]
+      summary: Update title and description
+      description: Does not change any person's confirmation. Updates updatedAt.
+      operationId: updateWorkItem
+      parameters:
+        - $ref: '#/components/parameters/WorkItemId'
+        - $ref: '#/components/parameters/DisplayName'
+        - $ref: '#/components/parameters/Role'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkItemWrite'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminWorkItem'
+        '400':
+          description: Title empty after trim. Previous row is unchanged.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FieldError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [AdminWorkItems]
+      summary: Delete a work item for every person
+      description: Removes the item and its confirmation rows. Other items keep their ids.
+      operationId: deleteWorkItem
+      parameters:
+        - $ref: '#/components/parameters/WorkItemId'
+        - $ref: '#/components/parameters/DisplayName'
+        - $ref: '#/components/parameters/Role'
+      responses:
+        '204':
+          description: Deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  parameters:
+    DisplayName:
+      name: X-Display-Name
+      in: header
+      required: true
+      schema:
+        type: string
+    Role:
+      name: X-Role
+      in: header
+      required: true
+      schema:
+        $ref: '#/components/schemas/Role'
+    Direction:
+      name: direction
+      in: query
+      description: Sort by created time. Default desc (newest first).
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
+    Page:
+      name: page
+      in: query
+      description: 1-based page. Page size is always 10.
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    WorkItemId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+
+  responses:
+    Unauthorized:
+      description: Missing display name
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Role is not admin
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: No work item with that id
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    Role:
+      type: string
+      enum: [user, admin]
+    Status:
+      type: string
+      enum: [pending, confirmed]
+      description: pending is 待確認. confirmed is 已確認.
+    SignIn:
+      type: object
+      required: [displayName, role]
+      properties:
+        displayName:
+          type: string
+        role:
+          $ref: '#/components/schemas/Role'
+    Session:
+      type: object
+      required: [displayName, role]
+      properties:
+        displayName:
+          type: string
+          description: Trimmed name
+        role:
+          $ref: '#/components/schemas/Role'
+    WorkItemSummary:
+      type: object
+      required: [id, title, status, createdAt]
+      properties:
+        id:
+          type: integer
+          description: 編號
+        title:
+          type: string
+        status:
+          $ref: '#/components/schemas/Status'
+        createdAt:
+          type: string
+          format: date-time
+    WorkItemDetail:
+      allOf:
+        - $ref: '#/components/schemas/WorkItemSummary'
+        - type: object
+          required: [description, updatedAt]
+          properties:
+            description:
+              type: string
+            updatedAt:
+              type: string
+              format: date-time
+    WorkItemPage:
+      type: object
+      required: [page, pageSize, total, direction, items]
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+          enum: [10]
+        total:
+          type: integer
+        direction:
+          type: string
+          enum: [asc, desc]
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkItemSummary'
+    AdminWorkItem:
+      type: object
+      required: [id, title, description, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    AdminWorkItemPage:
+      type: object
+      required: [page, pageSize, total, direction, items]
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+          enum: [10]
+        total:
+          type: integer
+        direction:
+          type: string
+          enum: [asc, desc]
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminWorkItem'
+    WorkItemWrite:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+    ConfirmRequest:
+      type: object
+      required: [ids]
+      properties:
+        ids:
+          type: array
+          minItems: 1
+          items:
+            type: integer
+            minimum: 1
+    ConfirmResult:
+      type: object
+      required: [confirmedCount]
+      properties:
+        confirmedCount:
+          type: integer
+          description: Number of ids confirmed. UI toast is 已成功確認 X 項目.
+    RevokeResult:
+      type: object
+      required: [revokedCount]
+      properties:
+        revokedCount:
+          type: integer
+          enum: [1]
+          description: UI toast is 已將 X 項目標記為待確認.
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          enum: [name_required, invalid_role, sign_in_required, admin_required, empty_selection, not_found, validation]
+    FieldError:
+      type: object
+      required: [error, field]
+      properties:
+        error:
+          type: string
+          enum: [validation]
+        field:
+          type: string
+          enum: [title]

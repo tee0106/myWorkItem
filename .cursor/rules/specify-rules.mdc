@@ -1,30 +1,33 @@
-﻿# goalTracker Development Guidelines
+﻿# myWorkItem Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2025-11-19
+Auto-generated from all feature plans. Last updated: 2026-10-14
 
 ## Active Technologies
 
-- Frontend → Vue 3 + TypeScript; Backend → .NET 8 Web API + Vite, Tailwind + DaisyUI, Dapper, SQLite driver (001-core-dashboard)
+- Frontend: Vue 3, TypeScript (strict), Composition API, composables, Vite, Vue Router, DaisyUI, Tailwind CSS (001-work-item-list)
+- Backend: .NET 9 Web API, Dapper, Microsoft.Data.Sqlite (001-work-item-list)
+- Database: local SQLite file (001-work-item-list)
+- Tests: Vitest, Vue Test Utils, xUnit against SQLite (001-work-item-list)
 
 ## Project Structure
 
 ```text
 backend/
 frontend/
-tests/
 ```
 
 ## Commands
 
-npm test; npm run lint
+frontend: npm run dev; npm run typecheck; npm test
+backend: dotnet run; dotnet build; dotnet test
 
 ## Code Style
 
-Frontend → Vue 3 + TypeScript; Backend → .NET 8 Web API: Follow standard conventions
+Vue 3 + TypeScript strict and .NET 9: typed public contracts; SQL only in data access; DaisyUI before custom widgets
 
 ## Recent Changes
 
-- 001-core-dashboard: Added Frontend → Vue 3 + TypeScript; Backend → .NET 8 Web API + Vite, Tailwind + DaisyUI, Dapper, SQLite driver
+- 001-work-item-list: Vue 3 + TypeScript strict, DaisyUI, .NET 9 Web API, Dapper, SQLite, Vitest, xUnit
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
